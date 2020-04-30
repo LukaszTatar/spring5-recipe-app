@@ -4,15 +4,18 @@ import guru.springframework.domain.*;
 import guru.springframework.repositories.CategoryRepository;
 import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -27,8 +30,10 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     }
 
     @Override
+    @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         recipeRepository.saveAll(getRecipes());
+        log.debug("getting bootstrap data");
     }
 
     private List<Recipe> getRecipes() {
@@ -91,6 +96,8 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         UnitOfMeasure dashUnitOfMeasure = dashByDescription.get();
         UnitOfMeasure pintUnitOfMeasure = pintByDescription.get();
 
+        log.debug("units om measure created");
+
         Optional<Category> americanCategoryByDescription = categoryRepository.findByDescription("American");
 
         if (!americanCategoryByDescription.isPresent()) {
@@ -119,6 +126,8 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         Category italianCategory = italianCategoryByDescription.get();
         Category mexicanCategory = mexicanCategoryByDescription.get();
         Category fastFoodCategory = fastFoodCategoryByDescription.get();
+
+        log.debug("Food categories created");
 
         //Yummy Guac
         Recipe guacRecipe = new Recipe();
@@ -168,7 +177,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 
         recipes.add(guacRecipe);
 
-        System.out.println("added guac recipe");
+        log.debug("Guac recipe created");
 
         //Yummy Tacos
         Recipe tacosRecipe = new Recipe();
@@ -227,7 +236,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         tacosRecipe.getCategories().add(mexicanCategory);
 
         recipes.add(tacosRecipe);
-        System.out.println("added tacos recipe");
+        log.debug("tacos recipe created");
 
 
         return recipes;

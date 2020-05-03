@@ -21,6 +21,6 @@ public class RecipeController {
     public String listRecipes(Model model) {
         model.addAttribute("recipes", recipeService.getRecipes());
 
-        return "recipes";
+        return "recipesView";
     }
 }

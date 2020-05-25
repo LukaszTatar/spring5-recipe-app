@@ -1,13 +1,14 @@
 package guru.springframework.controllers;
 
-
 import guru.springframework.services.RecipeService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Slf4j
+/**
+ * Created by jt on 6/19/17.
+ */
 @Controller
 public class RecipeController {
 
@@ -17,10 +18,9 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    @RequestMapping("/recipes")
-    public String listRecipes(Model model) {
-        model.addAttribute("recipes", recipeService.getRecipes());
-
-        return "recipesView";
+    @RequestMapping("/recipe/show/{id}")
+    public String showById(@PathVariable String id, Model model){
+        model.addAttribute("recipe", recipeService.findById(Long.valueOf(id)));
+        return "recipe/show";
     }
 }
